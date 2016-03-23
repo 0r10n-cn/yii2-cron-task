@@ -1,25 +1,23 @@
 {
-    "name": "0r10n-cn/yii2-cron-task",
-    "description": "Cron and task extension for Yii2",
-    "keywords": ["task", "cron", "yii2"],
-    "type": "yii2-extension",
-    "license": "The MIT License (MIT)",
-    "support": {
-        "issues": "https://github.com/0r10n-cn/yii2-cron-task/issues",
-        "source": "https://github.com/0r10n-cn/yii2-cron-task/"
-    },
-    "authors": [
-        {
-            "name": "Andrew Yurcheko",
-            "email": "ayurchenko87@gmail.com"
-        }
-    ],
-    "require": {
-        "yiisoft/yii2": ">=2.0.4",
-    },
-    "autoload": {
-        "psr-4": {
-            "yii\\cron\\": ""
-        }
-    },
+	"name": "0r10n-cn/yii2-cron-task",
+	"description": "Cron and task extension for Yii2",
+	"keywords": ["task", "cron", "yii2"],
+	"type": "yii2-extension",
+	"license": "The MIT License (MIT)",
+	"support": {
+		"issues": "https://github.com/0r10n-cn/yii2-cron-task/issues",
+		"source": "https://github.com/0r10n-cn/yii2-cron-task/"
+	},
+	"authors": [{
+		"name": "Andrew Yurcheko",
+		"email": "ayurchenko87@gmail.com"
+	}],
+	"require": {
+		"yiisoft/yii2": ">=2.0.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"yii\\cron\\": ""
+		}
+	}
 }
