@@ -1,5 +1,5 @@
 <?php
-namespace yii\cron\components\Cron;
+namespace yii\cron\components;
 
 
 use yii\base\Exception;
@@ -55,10 +55,18 @@ class Cron extends \yii\base\Component{
 			'priority' => $priority,
 		]);
 
-		if (!$task->save()) {
+		if (!$task->save() && $task->getFirstErrors()) {
 			throw new CronException($task->getFirstErrors()[0]);
 		}
 		self::$taskHashes[] = $task->hash;
 		return $task;
+	}
+
+	public function createTaskCallback($command, $params, $priority = Task::PRIORITY_MEDIUM, $cronID = null, $ifNotExists = true) {
+		if (!is_callable($command)) {
+			throw new CronException('Command is not callback');
+		}
+
+		return $this->createTask(Task::TYPE_CALLBACK, $command, $params, $priority, $cronID, $ifNotExists);
 	}
 }

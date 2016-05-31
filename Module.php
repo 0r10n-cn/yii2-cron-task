@@ -6,15 +6,21 @@ use Yii;
 use yii\base\BootstrapInterface;
 
 class Module extends \yii\base\Module implements BootstrapInterface {
+	public $id = 'cron';
 	/**
 	 * @inheritdoc
 	 */
-	public $controllerNamespace = 'yii\cron\controllers';
+	public $controllerNamespace = 'yii\cron\console';
 
 	/**
 	 * @inheritdoc
 	 */
 	public function bootstrap($app) {
+		Yii::$app->setComponents([
+			'cron' => [
+				'class' => \yii\cron\components\Cron::className(),
+			],
+		]);
 		if ($app instanceof \yii\web\Application) {
 			/*$app->getUrlManager()->addRules([
 				['class' => 'yii\web\UrlRule', 'pattern' => $this->id, 'route' => $this->id . '/default/index'],
@@ -22,10 +28,10 @@ class Module extends \yii\base\Module implements BootstrapInterface {
 				['class' => 'yii\web\UrlRule', 'pattern' => $this->id . '/<controller:[\w\-]+>/<action:[\w\-]+>', 'route' => $this->id . '/<controller>/<action>'],
 			], false);*/
 		} elseif ($app instanceof \yii\console\Application) {
-			$app->controllerMap[$this->id] = [
+			/*$app->controllerMap[$this->id] = [
 				'class'      => 'yii\cron\console\GenerateController',
 				'module'     => $this,
-			];
+			];*/
 		}
 	}
 
@@ -62,7 +68,7 @@ class Module extends \yii\base\Module implements BootstrapInterface {
 	protected function coreGenerators()
 	{
 		return [
-			'scheduler' => ['class' => 'yii\cron\console\GenerateController '],
+			//'scheduler' => ['class' => 'yii\cron\console\CronController'],
 		];
 	}
 

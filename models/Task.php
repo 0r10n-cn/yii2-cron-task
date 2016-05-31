@@ -51,8 +51,9 @@ class Task extends \yii\db\ActiveRecord
 
     public function scenarios() {
         return [
-            self::SCENARIO_NEW => ['hash', 'status', 'type', 'task_name', 'params', 'priority'],
-            self::SCENARIO_NEW_IF_NOT_EXISTS => ['hash', 'status', 'type', 'task_name', 'params', 'priority'],
+            self::SCENARIO_DEFAULT => [],
+            self::SCENARIO_NEW => ['hash', 'status', 'type', 'task_name', 'params', 'priority', 'cron_id'],
+            self::SCENARIO_NEW_IF_NOT_EXISTS => ['hash', 'status', 'type', 'task_name', 'params', 'priority', 'cron_id'],
         ];
     }
 
@@ -126,7 +127,39 @@ class Task extends \yii\db\ActiveRecord
         if (empty($this->hash)) {
             $this->hash = self::makeHash($this->task_name, $this->params);
         }
+        $valid = parent::beforeValidate();
+        $notExists = true;
+        if ($this->scenario === self::SCENARIO_NEW_IF_NOT_EXISTS && self::find()->where(['hash' => $this->hash, 'status' => self::STATUS_NEW])->exists()) {
+            $notExists = false;
+        }
 
-        return parent::beforeValidate();
+        return $valid && $notExists;
+    }
+
+    public function setStatusQueue() {
+        $this->status = self::STATUS_QUEUED;
+        $this->save();
+        return $this;
+    }
+
+    public function process() {
+        $this->status = self::STATUS_PROCESSING;
+        $this->save();
+        try {
+            switch ($this->type) {
+                case self::TYPE_YII:
+                        Yii::$app->runAction($this->task_name);
+                    break;
+                case self::TYPE_BASH:
+                        exec($this->task_name);
+                    break;
+
+            }
+        } catch (\Exception $e) {
+            $this->status = self::STATUS_ERROR;
+        }
+        $this->status = self::STATUS_COMPLETE;
+        $this->save();
+        return $this;
     }
 }
